@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Harichiu</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+    	@import url('https://fonts.googleapis.com/css?family=Dosis');
+
+    	body {
+    		padding-top: 20px;
+    		font-size: 20px;
+    		font-family: 'Dosis', sans-serif !important;
+    		background-color: #ECECEA; 
+    	}
+
+    	.row{
+    		margin-top : 2em !important;
+    		margin-bottom: 2em !important;
+    	}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+    	<div class="row">
+    		<div class="col-md-3" style="text-align: center;">
+				<p class="text-info"><h1>GET LINK </h1></p>
+    			<blockquote><small>code by Harichiu</small></blockquote>
+    		</div>
+
+    		<div class="col-md-9">
+    			<form id="laylink">
+    				<div class="form-group">
+    					<label for="url">Link :</label>
+    					<input type="text" class="form-control input-lg" id="url" placeholder="Link    |    Password" name="url" require>
+    					<blockquote>
+    						<footer>Supported : Fshare</footer>
+    					</blockquote>
+    				</div>
+    				<button onclick="get()" class="btn btn-success btn-lg btn-block" data-loading-text="Loading..........">Get Link</button>
+    			</form>
+    		</div>
+    	</div>
+
+    	<div class="row">
+    		<div class="col-md-12 hidden" id="result">
+    			<h3>RESULT</h3>
+    			<div class="well well-lg">
+    				<div class="form-group">
+	    				<div class="input-group">
+		    				<input type="text" class="form-control input-lg" id="rslink" value="" />
+		    				<span class="input-group-btn">
+						        <button class="btn btn-default btn-lg" type="button" onclick="copyfieldvalue(event , 'rslink');">Copy to Clipboard!</button>
+						    </span>
+	    				</div>
+    				</div>
+    				<a class="btn btn-lg btn-block btn-success">Donwload</a>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    	$(document).ready(function(){
+
+    	});	
+
+    	function get() {
+    		$('#result').addClass('hidden');
+    		$('form').submit(function(event){
+    			event.preventDefault();
+    		});
+    		
+    		let api = 'https://hrci.me/api/fs/data=',
+    			url = $('#url').val().split('|') || '',
+    			pwd = url[1] || '';
+    		if(url == ""){
+    			$('form > div').addClass('has-error').append('<span id="error" class="help-block">Please enter url</span>');
+    			setTimeout(function(){
+    				$('form > div').removeClass('has-error');
+    				$('#error').remove();
+    			} , 3000);
+    			return;
+    		}
+    		var btn = $('button').button('loading');
+   			let data = { url : url[0] , pwd : pwd};
+    		$.ajax({
+    			url: api + JSON.stringify(data),
+    			type : "GET",
+    			error : function(err){
+    				$('form > div').addClass('has-error').append('<span id="error" class="help-block">Get link failed. Please check agian.</span>');
+    				setTimeout(function(){
+    					btn.button('reset');
+	    				$('form > div').removeClass('has-error');
+	    				$('#error').remove();
+    			} , 3000);
+    			return;
+    			},
+
+    			success : function (result) {
+    				console.log(result);
+    				btn.button('reset');
+    				$('#rslink').val(result.url);
+    				$('#result').removeClass('hidden').find('a').attr('href' , result.url);
+    			},
+
+    			timeout : 10000
+    		});
+    	}
+
+
+    	function copyfieldvalue(e, id){
+		    var field = document.getElementById(id);
+		    field.focus();
+		    field.setSelectionRange(0, field.value.length);
+		    var copysuccess = copySelectionText();
+		}
+
+
+		function copySelectionText(){
+		    var copysuccess; // var to check whether execCommand successfully executed
+		    try{
+		        copysuccess = document.execCommand("copy"); // run command to copy selected text to clipboard
+		    } catch(e){
+		        copysuccess = false;
+		    }
+		    return copysuccess;
+		}
+
+    	
+    </script>
+  </body>
+</html>
