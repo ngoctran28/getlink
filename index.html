@@ -91,7 +91,7 @@
     			url = $('#url').val().split('|') || '',
     			pwd = url[1] || '';
     		if(url == ""){
-    			$('form > div').addClass('has-error').append('<span id="error" class="help-block">Please enter url</span>');
+    			$('form > div').addClass('has-error').append('<span id="error" class="help-block">Please enter url !</span>');
     			setTimeout(function(){
     				$('form > div').removeClass('has-error');
     				$('#error').remove();
